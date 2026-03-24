@@ -1,3 +1,9 @@
+---
+name: agentic-calling
+description: Make and receive phone calls, send SMS, and manage call recordings using Twilio. Use for outbound calls with text-to-speech, SMS notifications, call status monitoring, IVR menus, and conference calls.
+metadata: {"openclaw":{"requires":{"env":["TWILIO_ACCOUNT_SID","TWILIO_AUTH_TOKEN","TWILIO_PHONE_NUMBER"]}}}
+---
+
 # Agentic Calling Skill
 
 **Enable AI agents to make and receive phone calls autonomously using Twilio.**

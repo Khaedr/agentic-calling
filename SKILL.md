@@ -1,7 +1,7 @@
 ---
 name: agentic-calling
 description: Make and receive phone calls, send SMS, and manage call recordings using Twilio. Use for outbound calls with text-to-speech, SMS notifications, call status monitoring, IVR menus, and conference calls.
-metadata: {"openclaw":{"requires":{"env":["TWILIO_ACCOUNT_SID","TWILIO_AUTH_TOKEN","TWILIO_PHONE_NUMBER"]}}}
+metadata: {"openclaw":{"requires":{"env":["TWILIO_ACCOUNT_SID","TWILIO_AUTH_TOKEN","TWILIO_PHONE_NUMBER","TWILIO_MESSAGING_SERVICE_SID"]}}}
 ---
 
 # Agentic Calling Skill
@@ -34,7 +34,8 @@ Create a file at `~/.clawdbot/twilio-config.json`:
 {
   "accountSid": "YOUR_ACCOUNT_SID",
   "authToken": "YOUR_AUTH_TOKEN",
-  "phoneNumber": "+1XXXXXXXXXX"
+  "phoneNumber": "+1XXXXXXXXXX",
+  "messagingServiceSid": "MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 ```
 
@@ -44,6 +45,7 @@ Or set environment variables:
 export TWILIO_ACCOUNT_SID="YOUR_ACCOUNT_SID"
 export TWILIO_AUTH_TOKEN="YOUR_AUTH_TOKEN"
 export TWILIO_PHONE_NUMBER="+1XXXXXXXXXX"
+export TWILIO_MESSAGING_SERVICE_SID="MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # required for scheduled SMS
 ```
 
 ### 2. Make Your First Call

@@ -8,7 +8,7 @@ set -euo pipefail
 CONFIG_FILE="${HOME}/.clawdbot/twilio-config.json"
 TWILIO_ACCOUNT_SID="${TWILIO_ACCOUNT_SID:-}"
 TWILIO_AUTH_TOKEN="${TWILIO_AUTH_TOKEN:-}"
-TWILIO_PHONE_NUMBER="${TWILIO_PHONE_NUMBER:-}"
+TWILIO_MESSAGING_SERVICE_SID="${TWILIO_MESSAGING_SERVICE_SID:-}"
 
 # Parameters
 TO_NUMBER=""
@@ -19,7 +19,7 @@ MEDIA_URL=""
 if [[ -f "$CONFIG_FILE" ]]; then
   TWILIO_ACCOUNT_SID=$(jq -r '.accountSid // empty' "$CONFIG_FILE")
   TWILIO_AUTH_TOKEN=$(jq -r '.authToken // empty' "$CONFIG_FILE")
-  TWILIO_PHONE_NUMBER=$(jq -r '.phoneNumber // empty' "$CONFIG_FILE")
+  TWILIO_MESSAGING_SERVICE_SID=$(jq -r '.messagingServiceSid // empty' "$CONFIG_FILE")
 fi
 
 # Parse arguments
@@ -54,8 +54,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate
-if [[ -z "$TWILIO_ACCOUNT_SID" ]] || [[ -z "$TWILIO_AUTH_TOKEN" ]] || [[ -z "$TWILIO_PHONE_NUMBER" ]]; then
-  echo "Error: Twilio credentials not configured"
+if [[ -z "$TWILIO_ACCOUNT_SID" ]] || [[ -z "$TWILIO_AUTH_TOKEN" ]] || [[ -z "$TWILIO_MESSAGING_SERVICE_SID" ]]; then
+  echo "Error: Twilio credentials not configured (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_MESSAGING_SERVICE_SID)"
   exit 1
 fi
 
@@ -66,17 +66,15 @@ fi
 
 # Build request
 API_URL="https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json"
-FORM_DATA="To=${TO_NUMBER}&From=${TWILIO_PHONE_NUMBER}&Body=${MESSAGE}"
-
-if [[ -n "$MEDIA_URL" ]]; then
-  FORM_DATA="${FORM_DATA}&MediaUrl=${MEDIA_URL}"
-fi
 
 # Send SMS
 echo "Sending SMS to ${TO_NUMBER}..."
 RESPONSE=$(curl -s -X POST "$API_URL" \
   -u "${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}" \
-  -d "$FORM_DATA")
+  --data-urlencode "To=${TO_NUMBER}" \
+  --data-urlencode "MessagingServiceSid=${TWILIO_MESSAGING_SERVICE_SID}" \
+  --data-urlencode "Body=${MESSAGE}" \
+  ${MEDIA_URL:+--data-urlencode "MediaUrl=${MEDIA_URL}"})
 
 MESSAGE_SID=$(echo "$RESPONSE" | jq -r '.sid // empty')
 STATUS=$(echo "$RESPONSE" | jq -r '.status // empty')

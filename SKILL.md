@@ -116,6 +116,24 @@ Send SMS messages (useful for call follow-ups):
 ./scripts/sms-notify.sh --to "+15551234567" --message "Summary attached" --media "https://example.com/summary.pdf"
 ```
 
+## Scheduled SMS
+
+To schedule an SMS for future delivery (≥15 min, ≤7 days from now):
+
+```bash
+./scripts/schedule-sms.sh "+15551234567" "Your reminder message" "2026-04-10T14:00:00Z"
+```
+
+This returns JSON — extract the `.sid` field and store it if you need to cancel later.
+
+**To cancel a scheduled SMS:**
+
+```bash
+./scripts/cancel-sms.sh "SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+**Requirements:** `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_MESSAGING_SERVICE_SID` must be set in the environment. Scheduled SMS uses the Messaging Service (not a plain `From` number) — the `TWILIO_MESSAGING_SERVICE_SID` env var (`MG...`) is required.
+
 ### `call-status.sh` - Check Call Status
 
 Monitor active and completed calls:
